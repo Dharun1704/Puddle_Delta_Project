@@ -208,9 +208,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         else if (nps > 500 ) {
             userLvl.setText("News Wizard");
         }
-        else if (isDeveloper) {
-            userLvl.setText("Developer");
-        }
     }
 
     private void checkLvlFeatures() {
