@@ -190,7 +190,8 @@
                     android:layout_marginEnd="10dp"
                     android:textColor="#FFF"
                     android:fontFamily="@font/nunito"
-                    android:text="Being a developer, one can customize the news points and unlock all features."
+                    android:text="Being a developer, one can customize the news points and unlock all features.
+Scroll down to features section to see the criteria for unlocking the features."
                     android:layout_marginBottom="10dp"/>
 
                 <LinearLayout
