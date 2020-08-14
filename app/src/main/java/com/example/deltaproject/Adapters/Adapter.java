@@ -106,7 +106,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         holder.openArticle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                np = np++;
+                np++;
                 SharedPreferences newsPoints = context.getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = newsPoints.edit();
                 editor.putInt("np", np);
