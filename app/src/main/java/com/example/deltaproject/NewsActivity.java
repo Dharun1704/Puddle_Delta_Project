@@ -201,7 +201,7 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
         theme = sNewsTheme.getString("fNewsTheme", "Violet-Blue");
 
         switch (theme) {
-            case "Violet - Blue": {
+            case "Violet-Blue": {
                 background = ContextCompat.getDrawable(NewsActivity.this, R.drawable.background_violetblue);
                 button = Color.parseColor("#8A2BE2");
                 categoryIn = Color.parseColor("#8A2BE2");

@@ -144,7 +144,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         selected[0] = Selected.getInt("OptionSelectedNewsTheme", 0);
 
         theme = new ArrayAdapter<>(ProfileActivity.this, R.layout.dialog_item);
-        theme.add("Violet - Blue");
+        theme.add("Violet-Blue");
         theme.add("Deep Sea");
         theme.add("Dark");
 
