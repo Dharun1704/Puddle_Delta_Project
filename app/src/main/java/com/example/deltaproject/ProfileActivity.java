@@ -90,29 +90,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         newsPoint = findViewById(R.id.profile_np);
         dvlPassword = findViewById(R.id.developerPassword);
         dvlCustomNp = findViewById(R.id.customNP);
-        dvlCustomNp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView view, int actionId2, KeyEvent event2) {
-                if (actionId2 == EditorInfo.IME_ACTION_SEARCH || actionId2 == EditorInfo.IME_ACTION_DONE ||
-                        event2 != null &&
-                                event2.getAction() == KeyEvent.ACTION_DOWN &&
-                                event2.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    if (event2 == null || !event2.isShiftPressed()) {
-
-                        np = Integer.parseInt(view.getText().toString());
-                        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = newsPoints.edit();
-                        editor.putInt("np", np);
-                        editor.apply();
-                        newsPoint.setText(String.valueOf(np));
-                        assignLevel(np);
-                        dvlCustomNp.setText("");
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
 
         SharedPreferences developer = getSharedPreferences("Developer", Context.MODE_PRIVATE);
         isDeveloper = developer.getBoolean("isDeveloper", false);
@@ -187,6 +164,30 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                         .show();
             }
 
+        });
+
+        dvlCustomNp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId2, KeyEvent event2) {
+                if (actionId2 == EditorInfo.IME_ACTION_SEARCH || actionId2 == EditorInfo.IME_ACTION_DONE ||
+                        event2 != null &&
+                                event2.getAction() == KeyEvent.ACTION_DOWN &&
+                                event2.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if (event2 == null || !event2.isShiftPressed()) {
+
+                        np = Integer.parseInt(view.getText().toString());
+                        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = newsPoints.edit();
+                        editor.putInt("np", np);
+                        editor.apply();
+                        newsPoint.setText(String.valueOf(np));
+                        assignLevel(np);
+                        dvlCustomNp.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
         });
 
     }

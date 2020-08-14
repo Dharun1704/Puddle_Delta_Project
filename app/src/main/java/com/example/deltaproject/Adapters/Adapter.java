@@ -77,7 +77,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         holder.source.setText(model.getSource().getName());
 
         switch (theme) {
-            case "Violet - blue": {
+            case "Violet-blue": {
                 Drawable unwrapped = AppCompatResources.getDrawable(context, R.drawable.background2);
                 assert unwrapped != null;
                 Drawable wrapped = DrawableCompat.wrap(unwrapped);
