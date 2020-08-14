@@ -358,7 +358,7 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
                     categories[0].setBackground(wrapped3);
                     categories[0].setTextColor(Color.WHITE);
                     categories[0].setTypeface(categories[0].getTypeface(), Typeface.BOLD);
-                    for (int i = 1; i < 7; i++) {
+                    for (int i = 1; i < 8; i++) {
                         categories[i].setBackground(wrapped);
                         categories[i].setTextColor(Color.parseColor("#B6B6B6"));
                     }
