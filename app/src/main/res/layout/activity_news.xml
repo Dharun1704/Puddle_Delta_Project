@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.deltaproject.NewsActivity"
+    android:id="@+id/newsDrawer"
+    android:background="@drawable/background_violetblue">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/newsRefreshLayout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/linearLayout">
+
+                <include layout="@layout/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize" />
+
+                <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/category_layout"
+                android:scrollbars="none"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="15dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/topHd"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/background"
+                        android:fontFamily="@font/nunito"
+                        android:text="@string/top_headlines"
+                        android:textAllCaps="false"
+                        android:textColor="#B6B6B6"
+                        tools:ignore="ButtonStyle" />
+
+                    <Button
+                        android:id="@+id/global"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/background"
+                        android:text="@string/global"
+                        android:fontFamily="@font/nunito"
+                        android:textColor="#B6B6B6"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="15dp"
+                        tools:ignore="ButtonStyle" />
+
+                    <Button
+                        android:id="@+id/Business"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="15dp"
+                        android:textColor="#B6B6B6"
+                        android:fontFamily="@font/nunito"
+                        android:background="@drawable/background"
+                        android:text="@string/business"
+                        android:textAllCaps="false"
+                        tools:ignore="ButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/Entertainment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:textColor="#B6B6B6"
+                        android:fontFamily="@font/nunito"
+                        android:layout_marginStart="15dp"
+                        android:background="@drawable/background"
+                        android:text="@string/entertainment"
+                        android:textAllCaps="false"
+                        tools:ignore="ButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/health"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:textColor="#B6B6B6"
+                        android:fontFamily="@font/nunito"
+                        android:layout_marginStart="15dp"
+                        android:background="@drawable/background"
+                        android:text="@string/health"
+                        android:textAllCaps="false"
+                        tools:ignore="ButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/Science"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:textColor="#B6B6B6"
+                        android:fontFamily="@font/nunito"
+                        android:layout_marginStart="15dp"
+                        android:background="@drawable/background"
+                        android:text="@string/science"
+                        android:textAllCaps="false"
+                        tools:ignore="ButtonStyle"/>
+
+                    <Button
+                        android:id="@+id/Sports"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:fontFamily="@font/nunito"
+                        android:layout_marginStart="15dp"
+                        android:textColor="#B6B6B6"
+                        android:background="@drawable/background"
+                        android:text="@string/sports"
+                        android:textAllCaps="false"
+                        tools:ignore="ButtonStyle"/>
+
+
+                    <Button
+                        android:id="@+id/technology"
+                        android:layout_width="100dp"
+                        android:layout_height="45dp"
+                        android:textColor="#B6B6B6"
+                        android:fontFamily="@font/nunito"
+                        android:layout_marginStart="15dp"
+                        android:background="@drawable/background"
+                        android:text="@string/technology"
+                        android:textAllCaps="false"
+                        tools:ignore="ButtonStyle"/>
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/viewPagerLayout"
+                android:layout_below="@+id/linearLayout">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="120dp"
+                    android:id="@+id/subCategoryLayout">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:id="@+id/subCat4"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/view4"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/view_background"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv4"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="-20dp"
+                            android:layout_marginEnd="-20dp"
+                            android:fontFamily="@font/nova_slim"
+                            android:gravity="center"
+                            android:rotation="-90"
+                            android:text="TextView4"
+                            android:textColor="#B6B6B6" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:id="@+id/subCat3"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/view3"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/view_background"/>
+
+                        <TextView
+                            android:id="@+id/tv3"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="-20dp"
+                            android:layout_marginEnd="-20dp"
+                            android:fontFamily="@font/nova_slim"
+                            android:gravity="center"
+                            android:rotation="-90"
+                            android:text="TextView3"
+                            android:textColor="#B6B6B6" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:id="@+id/subCat2"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/view2"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/view_background"/>
+
+                        <TextView
+                            android:id="@+id/tv2"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="-20dp"
+                            android:layout_marginEnd="-20dp"
+                            android:fontFamily="@font/nova_slim"
+                            android:gravity="center"
+                            android:rotation="-90"
+                            android:text="TextView2"
+                            android:textColor="#B6B6B6" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:id="@+id/subCat1"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="match_parent"
+                            android:id="@+id/view1"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/view_background"/>
+
+                        <TextView
+                            android:id="@+id/tv1"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="-20dp"
+                            android:layout_marginEnd="-20dp"
+                            android:fontFamily="@font/nova_slim"
+                            android:gravity="center"
+                            android:rotation="-90"
+                            android:text="TextView1"
+                            android:textColor="#B6B6B6" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/news_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="35dp"
+                    android:paddingEnd="35dp" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/goToStart"
+                android:background="@drawable/background2"
+                android:layout_alignBottom="@+id/viewPagerLayout"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_arrow_left"
+                android:layout_marginBottom="30dp">
+
+            </ImageButton>
+
+            <include layout="@layout/error_screen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/viewPagerLayout"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:id="@+id/navigationView"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/nav_drawer"
+        app:itemIconTint="#FFF"
+        android:theme="@style/SideDrawer"
+        android:background="@drawable/background_violetblue"
+        app:itemTextColor="#FFF"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

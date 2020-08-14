@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/errorLayout"
+    android:paddingStart="16sp"
+    android:paddingEnd="16dp">
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/errorImage"
+        android:src="@drawable/no_result"
+        android:layout_marginTop="75dp"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/errorText"
+        android:text="Network Unavailable\n"
+        android:textStyle="bold"
+        android:textColor="#FFF"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/errorImage"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/errorTextMessage"
+        android:text="Make sure you have your network connection turned on and then pull down
+to refresh the page"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/errorText"
+        android:textColor="#FFF"
+        android:gravity="center" />
+
+
+</RelativeLayout>

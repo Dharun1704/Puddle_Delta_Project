@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/wtr_stg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#001020"
+    android:orientation="vertical">
+
+   <View
+       android:layout_width="30dp"
+       android:layout_height="5dp"
+       android:layout_gravity="center"
+       android:layout_marginTop="10dp"
+       android:background="@drawable/background3"
+       android:backgroundTint="#B0B0B0" />
+
+   <androidx.appcompat.widget.SwitchCompat
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="10dp"
+       android:layout_marginTop="20dp"
+       android:layout_marginEnd="10dp"
+       android:layout_marginBottom="20dp"
+       android:fontFamily="@font/nunito"
+       android:gravity="start|center"
+       android:text="Temperature"
+       android:id="@+id/temp_switch"
+       android:textColor="#FFF"
+       android:textOff="C"
+       android:textOn="F"
+       android:textSize="17sp"
+       android:thumb="@drawable/switch_thumb"
+       app:showText="true"
+       app:track="@drawable/switch_track" />
+
+   <LinearLayout
+       android:id="@+id/wind_settings"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="10dp"
+       android:layout_marginBottom="20dp"
+       android:orientation="vertical">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/nunito"
+          android:text="Wind"
+          android:textColor="#FFF"
+          android:textSize="17sp" />
+
+      <TextView
+          android:id="@+id/wind_unit"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/nunito"
+          android:text="Kilometer per hour - km/h"
+          android:textColor="#A8D0F0"
+          android:textSize="15sp" />
+
+   </LinearLayout>
+
+   <LinearLayout
+       android:id="@+id/pressure_settings"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="10dp"
+       android:layout_marginBottom="20dp"
+       android:orientation="vertical">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/nunito"
+          android:text="Pressure"
+          android:textColor="#FFF"
+          android:textSize="17sp" />
+
+      <TextView
+          android:id="@+id/pressure_unit"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/nunito"
+          android:text="Hectopascals - hPa"
+          android:textColor="#A8D0F0"
+          android:textSize="15sp" />
+
+   </LinearLayout>
+
+   <LinearLayout
+       android:id="@+id/visibility_settings"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="10dp"
+       android:layout_marginBottom="20dp"
+       android:orientation="vertical">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/nunito"
+          android:text="Visibility"
+          android:textColor="#FFF"
+          android:textSize="17sp" />
+
+      <TextView
+          android:id="@+id/visibility_unit"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/nunito"
+          android:text="Kilometer - km"
+          android:textColor="#A8D0F0"
+          android:textSize="15sp" />
+
+   </LinearLayout>
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <Button
+          android:id="@+id/btn_reset"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="40dp"
+          android:layout_gravity="start|center"
+          android:layout_marginStart="10dp"
+          android:layout_marginEnd="5dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginBottom="30dp"
+          android:background="@drawable/background3"
+          android:backgroundTint="#143252"
+          android:fontFamily="@font/nunito"
+          android:text="Reset"
+          android:textAllCaps="false"
+          android:textColor="#A8D0F0" />
+
+      <Button
+          android:id="@+id/btn_done"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="40dp"
+          android:layout_gravity="end"
+          android:layout_marginTop="10dp"
+          android:layout_marginEnd="10dp"
+          android:layout_marginStart="5dp"
+          android:layout_marginBottom="30dp"
+          android:background="@drawable/background3"
+          android:backgroundTint="#143252"
+          android:fontFamily="@font/nunito"
+          android:text="Done"
+          android:textAllCaps="false"
+          android:textColor="#A8D0F0" />
+
+   </LinearLayout>
+
+   <include
+       layout="@layout/dialog_item"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:visibility="gone" />
+
+</LinearLayout>

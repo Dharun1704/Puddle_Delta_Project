@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Puddle</string>
+    <string name="top_headlines">Headlines</string>
+    <string name="business">Business</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="health">Health</string>
+    <string name="science">Science</string>
+    <string name="sports">Sports</string>
+    <string name="technology">Technology</string>
+    <string name="global">Global</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="sensorError">Oops!.Sensor not supported</string>
+    <string name="news_points_hd">News Points [NP]</string>
+    <string name="news_point_desc">News Points are calculated based on the number of articles you read. Reading an article gives you one NewsPoint.</string>
+    <string name="level_hd">Level</string>
+    <string name="level_desc"><![CDATA[Level is based on the news points one accumulate. There are a total of five levels.
+    \n\n\t\t\tNoob Master\t\t\t\t-\t\t\t\t0 < NP < 50
+    \n\t\t\tReader\t\t\t\t\t\t\t\t-\t\t\t\t50 < NP < 100
+    \n\t\t\tFront Bencher\t\t\t-\t\t\t\t100 < NP < 300
+    \n\t\t\tProdigy\t\t\t\t\t\t\t\t-\t\t\t\t300 < NP < 500
+    \n\t\t\tNews Wizard\t\t\t-\t\t\t\tNP > 500
+    \n\nMake sure you become a news wizard to unlock some interesting features.]]></string>
+    <string name="gyro_unit">rad/s</string>
+    <string name="orn_unit">°</string>
+</resources>
