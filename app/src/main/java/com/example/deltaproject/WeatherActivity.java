@@ -404,7 +404,7 @@ public class WeatherActivity extends AppCompatActivity implements NavigationView
                     startActivity(i);
                     finish();
                 }
-            }, 10000);
+            }, 15000);
         }
     }
 
