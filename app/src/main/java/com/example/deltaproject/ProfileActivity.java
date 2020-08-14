@@ -246,7 +246,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             newsTheme.setText(fTheme[0]);
         }
 
-        if (np < 101 && s.equals("Dark")) {
+        if (np > 50 && np < 101 && s.equals("Dark")) {
             Toast.makeText(ProfileActivity.this, "Theme unavailable for this level. Current theme set is the latest theme available", Toast.LENGTH_LONG).show();
             selected[0] = 1;
             SharedPreferences Selected = getSharedPreferences("NewsTheme", MODE_PRIVATE);
