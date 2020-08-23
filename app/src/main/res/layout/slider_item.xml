@@ -11,92 +11,92 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal">
     
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:id="@+id/sliderPhoto"
-        android:transitionName="img"
-        app:riv_corner_radius="30dp"
-        android:elevation="0dp"
-        android:src="@drawable/icon_news"/>
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:id="@+id/sliderPhoto"
+            android:transitionName="img"
+            app:riv_corner_radius="30dp"
+            android:elevation="0dp"
+            android:src="@drawable/icon_news"/>
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:elevation="5dp"
-        android:id="@+id/sliderBottomShadow"
-        app:riv_corner_radius="30dp"
-        android:background="@drawable/bottom_shadow"
-        android:layout_alignBottom="@id/sliderPhoto" />
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:elevation="5dp"
+            android:id="@+id/sliderBottomShadow"
+            app:riv_corner_radius="30dp"
+            android:background="@drawable/bottom_shadow"
+            android:layout_alignBottom="@id/sliderPhoto" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Title"
-        android:id="@+id/sliderTitle"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:fontFamily="@font/nunito"
-        android:elevation="10dp"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="5dp"
-        android:layout_alignBottom="@+id/sliderPhoto"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:id="@+id/sliderTitle"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:fontFamily="@font/nunito"
+            android:elevation="10dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_alignBottom="@+id/sliderPhoto"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/white"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/sliderDesc"
-        android:fontFamily="@font/nunito"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/sliderPhoto"
-        android:text="Description"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sliderDesc"
+            android:fontFamily="@font/nunito"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/sliderPhoto"
+            android:text="Description"
+            android:textColor="#FFFFFF"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_below="@id/sliderDesc"
-        android:id="@+id/sliderSource"
-        android:text="Source"
-        android:fontFamily="@font/nunito"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textColor="#A8D0F0"
-        android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_below="@id/sliderDesc"
+            android:id="@+id/sliderSource"
+            android:text="Source"
+            android:fontFamily="@font/nunito"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="#A8D0F0"
+            android:textStyle="bold"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:id="@+id/sliderTime"
-        android:layout_below="@id/sliderDesc"
-        android:layout_marginTop="10dp"
-        android:layout_toEndOf="@id/sliderSource"
-        android:text="Time"
-        android:textColor="#FFFFFF"
-        android:fontFamily="@font/nunito"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:ellipsize="end" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:id="@+id/sliderTime"
+            android:layout_below="@id/sliderDesc"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/sliderSource"
+            android:text="Time"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/nunito"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="end" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:id="@+id/openArticle"
-        android:text="Read Article"
-        android:textAllCaps="false"
-        android:layout_below="@id/sliderSource"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:fontFamily="@font/nunito"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:background="@drawable/background2"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:id="@+id/openArticle"
+            android:text="Read Article"
+            android:textAllCaps="false"
+            android:layout_below="@id/sliderSource"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:fontFamily="@font/nunito"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:background="@drawable/background2"/>
 
-        </RelativeLayout>
+    </RelativeLayout>
 
 </androidx.core.widget.NestedScrollView>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +19,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,11 +31,22 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.deltaproject.Adapters.BookmarkAdapter;
+import com.example.deltaproject.NewsModel.Article;
+import com.example.deltaproject.NewsModel.News;
+import com.example.deltaproject.NewsModel.Source;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -42,16 +55,24 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
+    private ViewPager2 bookmarkLayout;
+    private NestedScrollView nestedScrollView;
+    private CompositePageTransformer pageTransformer;
+    private BookmarkAdapter adapter;
+    private NewsDatabase newsDb;
     private LinearLayout dvlModePassword, dvlModeMain;
+
+    TextView appTitle, userLvl, newsPoint, newsTheme, noBookmarkFound, bookmarksHD;
+    RelativeLayout NewsThemeLayout;
+    EditText dvlPassword, dvlCustomNp;
+    ImageButton deleteBookmark;
+
     ArrayAdapter<String> theme;
+    ArrayList<Article> bookmarkArticle;
     String[] fTheme;
     int np;
     int selected[] = {0};
-    boolean isDeveloper;
-
-    TextView appTitle, userLvl, newsPoint, newsTheme;
-    RelativeLayout NewsThemeLayout;
-    EditText dvlPassword, dvlCustomNp;
+    boolean isDeveloper, isBookmarkLayoutOn = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +103,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        newsDb = new NewsDatabase(this);
+        nestedScrollView = findViewById(R.id.nestedProfileView);
         dvlModePassword = findViewById(R.id.developerModePassword);
         dvlModeMain = findViewById(R.id.developerModeMain);
         NewsThemeLayout = findViewById(R.id.newsTheme);
@@ -90,6 +113,29 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         newsPoint = findViewById(R.id.profile_np);
         dvlPassword = findViewById(R.id.developerPassword);
         dvlCustomNp = findViewById(R.id.customNP);
+
+        noBookmarkFound = findViewById(R.id.noBookmarks);
+        deleteBookmark = findViewById(R.id.deleteBookmark);
+        bookmarksHD = findViewById(R.id.bookmarks_hd);
+        bookmarkLayout = findViewById(R.id.bookmark_news_slider);
+        bookmarkLayout.setClipToPadding(false);
+        bookmarkLayout.setClipChildren(false);
+        bookmarkLayout.setOffscreenPageLimit(3);
+        bookmarkLayout.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+
+        pageTransformer = new CompositePageTransformer();
+        pageTransformer.addTransformer(new MarginPageTransformer(40));
+        pageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.85f + r * 0.15f);
+            }
+        });
+        bookmarkLayout.setPageTransformer(pageTransformer);
+        bookmarkLayout.setSaveFromParentEnabled(false);
+
+        nestedScrollView.setVisibility(View.VISIBLE);
 
         SharedPreferences developer = getSharedPreferences("Developer", Context.MODE_PRIVATE);
         isDeveloper = developer.getBoolean("isDeveloper", false);
@@ -189,7 +235,20 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 return false;
             }
         });
+    }
 
+    @Override
+    public void onBackPressed() {
+        if (isBookmarkLayoutOn) {
+            noBookmarkFound.setVisibility(View.GONE);
+            bookmarkLayout.setVisibility(View.GONE);
+            bookmarksHD.setVisibility(View.GONE);
+            deleteBookmark.setVisibility(View.GONE);
+            nestedScrollView.setVisibility(View.VISIBLE);
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
     private void assignLevel(int nps) {
@@ -364,7 +423,78 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             });
         }
 
+        else if (item.getItemId() == R.id.viewBookmarks) {
+            isBookmarkLayoutOn = true;
+            nestedScrollView.setVisibility(View.GONE);
+
+            displayFromDatabase();
+
+            deleteBookmark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = bookmarkLayout.getCurrentItem();
+                    String deleteUrl = bookmarkArticle.get(position).getUrl();
+                    int deleteRow = newsDb.deleteData(deleteUrl);
+                    if (deleteRow > 0) {
+                        Toast.makeText(ProfileActivity.this, "Article deleted from bookmarks", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        Toast.makeText(ProfileActivity.this, "Unable to delete article from bookmarks", Toast.LENGTH_SHORT).show();
+                    getDataFromDatabase();
+                    displayFromDatabase();
+                    bookmarkLayout.setCurrentItem(position, true);
+                }
+            });
+
+        }
+
         return true;
+    }
+
+    private void getDataFromDatabase() {
+        bookmarkArticle = new ArrayList<>();
+        Cursor data = newsDb.getData();
+
+        while (data.moveToNext()) {
+            String author = data.getString(1);
+            String title = data.getString(2);
+            String desc = data.getString(3);
+            String url = data.getString(4);
+            String urltoimage = data.getString(5);
+            String publish = data.getString(6);
+            String source = data.getString(7);
+            Article article = new Article();
+            Source source1 = new Source();
+            article.setAuthor(author);
+            article.setTitle(title);
+            article.setDescription(desc);
+            article.setUrl(url);
+            article.setUrlToImage(urltoimage);
+            article.setPublishedAt(publish);
+            source1.setName(source);
+            article.setSource(source1);
+            bookmarkArticle.add(article);
+        }
+    }
+
+    private void displayFromDatabase() {
+        getDataFromDatabase();
+
+        if (bookmarkArticle.size() == 0) {
+            noBookmarkFound.setVisibility(View.VISIBLE);
+            bookmarkLayout.setVisibility(View.GONE);
+            deleteBookmark.setVisibility(View.GONE);
+            bookmarksHD.setVisibility(View.GONE);
+        }
+
+        else {
+            noBookmarkFound.setVisibility(View.GONE);
+            bookmarksHD.setVisibility(View.VISIBLE);
+            deleteBookmark.setVisibility(View.VISIBLE);
+            bookmarkLayout.setVisibility(View.VISIBLE);
+            adapter = new BookmarkAdapter(ProfileActivity.this, bookmarkArticle);
+            bookmarkLayout.setAdapter(adapter);
+        }
     }
 
     @Override

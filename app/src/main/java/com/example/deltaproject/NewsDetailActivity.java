@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,10 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.deltaproject.NewsModel.Article;
+import com.example.deltaproject.NewsModel.Source;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class NewsDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener{
@@ -33,12 +38,15 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
     private FrameLayout dateLayout;
     private LinearLayout appbarTitle;
     private WebView webView;
+    private NewsDatabase db;
+
     ImageView imageView;
     TextView title, appbar_title, appbar_subTitle, date, time;
     AppBarLayout appBarLayout;
     Toolbar toolbar;
 
-    String mUrl, mImage, mTitle, mDate, mSource, mAuthor;
+    ArrayList<Article> articles;
+    String mUrl, mImage, mTitle, mDate, mSource, mAuthor, mDesc;
     private boolean hideToolbar = false;
 
     @Override
@@ -59,6 +67,9 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("");
 
+        db = new NewsDatabase(this);
+        articles = new ArrayList<>();
+
         appBarLayout = findViewById(R.id.appbar);
         appBarLayout.addOnOffsetChangedListener(this);
         dateLayout = findViewById(R.id.date_behavior);
@@ -77,6 +88,7 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
         mDate = intent.getStringExtra("date");
         mSource = intent.getStringExtra("source");
         mAuthor = intent.getStringExtra("author");
+        mDesc = intent.getStringExtra("description");
 
         if( mImage == null || mImage.isEmpty()) {
             imageView.setImageResource(R.drawable.icon_news);
@@ -169,6 +181,48 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
             } catch (Exception e) {
                 Toast.makeText(this, "Oops.... Sorry \nCannot be shared", Toast.LENGTH_SHORT).show();
             }
+        }
+
+        else if (id == R.id.add_to_bookmark) {
+
+            Cursor data = db.getData();
+            while (data.moveToNext()) {
+                String author = data.getString(1);
+                String title = data.getString(2);
+                String desc = data.getString(3);
+                String url = data.getString(4);
+                String urltoimage = data.getString(5);
+                String publish = data.getString(6);
+                String source = data.getString(7);
+                Article article = new Article();
+                Source source1 = new Source();
+                article.setAuthor(author);
+                article.setTitle(title);
+                article.setDescription(desc);
+                article.setUrl(url);
+                article.setUrlToImage(urltoimage);
+                article.setPublishedAt(publish);
+                source1.setName(source);
+                article.setSource(source1);
+                articles.add(article);
+            }
+
+            boolean isExisted = false;
+            for (int i = 0; i < articles.size(); i++) {
+                if (articles.get(i).getUrl().equals(mUrl)) {
+                    isExisted = true;
+                }
+            }
+
+            if (!isExisted) {
+                boolean insertData = db.addData(mAuthor, mTitle, mDesc, mUrl, mImage, mDate, mSource);
+                if (insertData)
+                    Toast.makeText(NewsDetailActivity.this, "Article added to bookmarks.", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(NewsDetailActivity.this, "Unable to add article to bookmarks", Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(NewsDetailActivity.this, "Article already exists in bookmarks.", Toast.LENGTH_SHORT).show();
         }
 
         else if (id == R.id.view_in_web) {

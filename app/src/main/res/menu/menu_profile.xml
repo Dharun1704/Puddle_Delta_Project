@@ -6,6 +6,10 @@
         android:title="Reset"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/viewBookmarks"
+        android:title="Bookmarks"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/developMode"
         android:title="Developer Mode"
         app:showAsAction="never"/>

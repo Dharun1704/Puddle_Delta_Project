@@ -7,6 +7,11 @@
         android:icon="@drawable/ic_share"
         app:showAsAction="always"/>
 
+    <item android:id="@+id/add_to_bookmark"
+        android:title="Bookmark article"
+        android:icon="@drawable/ic_bookmarkon"
+        app:showAsAction="always"/>
+
     <item android:id="@+id/view_in_web"
         android:title="Open in browser"
         app:showAsAction="never"/>
