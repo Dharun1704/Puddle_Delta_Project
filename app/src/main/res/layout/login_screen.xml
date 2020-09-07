@@ -9,10 +9,11 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="430dp"
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         app:cardCornerRadius="20dp"
+        android:id="@+id/loginCard"
         android:layout_centerInParent="true">
 
         <LinearLayout
@@ -20,12 +21,23 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#252525"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/nunito"
+                android:textStyle="bold"
+                android:text="Log In"/>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_marginBottom="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginTop="75dp"
+                android:layout_marginTop="20dp"
                 app:errorEnabled="true"
                 android:layout_height="wrap_content"
                 android:id="@+id/input_email">
@@ -33,7 +45,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
+                    android:hint="Username"
                     android:textColor="#784278"
                     android:fontFamily="@font/nunito"
                     android:textSize="17sp"
@@ -66,8 +78,127 @@
                 android:id="@+id/login_button"
                 android:text="Login"
                 android:layout_gravity="center"
-                android:onClick="confirmInputs"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/background"
+                android:textColor="#FFF"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/nunito"
+                android:textStyle="bold"
+                android:text="Don't have an account"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/nunito"
+                android:textStyle="bold"
+                android:id="@+id/signUpText"
+                android:textColor="@android:color/holo_blue_dark"
+                android:text="Sign Up"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:visibility="gone"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        app:cardCornerRadius="20dp"
+        android:id="@+id/signUpCard"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#252525"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/nunito"
+                android:textStyle="bold"
+                android:text="Create account"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="25dp"
+                app:errorEnabled="true"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:textColor="#784278"
+                    android:fontFamily="@font/nunito"
+                    android:textSize="17sp"
+                    android:inputType="textEmailAddress" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:errorEnabled="true"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_username">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Username"
+                    android:textColor="#784278"
+                    android:fontFamily="@font/nunito"
+                    android:textSize="17sp"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:errorEnabled="true"
+                android:layout_height="wrap_content"
+                android:id="@+id/create_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:textColor="#784278"
+                    android:fontFamily="@font/nunito"
+                    android:textSize="17sp"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:id="@+id/signup_button"
+                android:text="Sign up"
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:layout_marginBottom="25dp"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/background"
                 android:textColor="#FFF"/>
 

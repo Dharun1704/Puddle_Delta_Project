@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "731020952976",
+    "firebase_url": "https://puddle-283811.firebaseio.com",
+    "project_id": "puddle-283811",
+    "storage_bucket": "puddle-283811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731020952976:android:88532b4e7902833a1c5f15",
+        "android_client_info": {
+          "package_name": "com.example.puddle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "731020952976-rrh2o6pk7ksdcjmv5o7akhtef67keff8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.puddle",
+            "certificate_hash": "9e610667c6719beb97ac1663ab454e51396048c3"
+          }
+        },
+        {
+          "client_id": "731020952976-cl3b3tjkgf52lvu7gnb2g70m42ivipdk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwxubxJg6_QFe8cfBCdUU4sE91Re6DX6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "731020952976-cl3b3tjkgf52lvu7gnb2g70m42ivipdk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
