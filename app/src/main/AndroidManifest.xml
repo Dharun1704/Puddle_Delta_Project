@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.deltaproject">
+    package="com.example.puddle">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -18,33 +18,38 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
-        <activity
-            android:name=".NewsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name="com.example.puddle.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewsDetailActivity"
+        <activity
+            android:name="com.example.puddle.NewsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name="com.example.puddle.NewsDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".WeatherActivity"
+        <activity android:name="com.example.puddle.WeatherActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".WeatherCitySearchActivity"
+        <activity android:name="com.example.puddle.WeatherCitySearchActivity"
             android:screenOrientation="portrait"
             android:label="Search">
         </activity>
-        <activity android:name=".SensorActivity"
+        <activity android:name="com.example.puddle.SensorActivity"
             android:screenOrientation="portrait"
             android:label="Sensors">
         </activity>
-        <activity android:name=".ProfileActivity"
+        <activity android:name="com.example.puddle.ProfileActivity"
             android:screenOrientation="portrait"
             android:label="Profile">
         </activity>

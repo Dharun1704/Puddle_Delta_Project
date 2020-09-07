@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.deltaproject.NewsActivity"
+    tools:context="com.example.puddle.NewsActivity"
     android:id="@+id/newsDrawer"
     android:background="@drawable/background_violetblue">
 
