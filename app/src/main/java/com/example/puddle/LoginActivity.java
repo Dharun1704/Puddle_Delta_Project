@@ -1,7 +1,11 @@
 package com.example.puddle;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,8 +99,17 @@ public class LoginActivity extends AppCompatActivity {
         signUpText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final Animation fadeIn = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_in);
+                final Animation fadeOut = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_out);
+                loginCard.setAnimation(fadeOut);
                 loginCard.setVisibility(View.GONE);
-                signUpCard.setVisibility(View.VISIBLE);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        signUpCard.setVisibility(View.VISIBLE);
+                        signUpCard.setAnimation(fadeIn);
+                    }
+                }, 500);
             }
         });
     }
@@ -156,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void confirmInputs(final String email, final String password) {
+    public void confirmInputs(final String username, final String password) {
         if (!validateUsername() | !validatePassword()) {
             return;
         }
@@ -164,11 +177,14 @@ public class LoginActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(email).exists()) {
-                    if (!email.isEmpty()) {
-                        User user = dataSnapshot.child(email).getValue(User.class);
+                if (dataSnapshot.child(username).exists()) {
+                    if (!username.isEmpty()) {
+                        User user = dataSnapshot.child(username).getValue(User.class);
                         if (user.getPassword().equals(password)) {
                             Toast.makeText(LoginActivity.this, "LogIn successful", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, NewsActivity.class);
+                            intent.putExtra("user", username);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(LoginActivity.this, "Incorrect password", Toast.LENGTH_SHORT).show();
                         }
@@ -200,8 +216,21 @@ public class LoginActivity extends AppCompatActivity {
         user.setEmail(email);
         String pwd = startEncryption(password);
         user.setPassword(pwd);
-
         reference.child(username).setValue(user);
+        Toast.makeText(LoginActivity.this, "Account created successfully. Please logIn.",
+                Toast.LENGTH_SHORT).show();
+
+        final Animation fadeIn = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_in);
+        final Animation fadeOut = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_out);
+        signUpCard.setAnimation(fadeOut);
+        signUpCard.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loginCard.setVisibility(View.VISIBLE);
+                loginCard.setAnimation(fadeIn);
+            }
+        }, 500);
     }
 
     private String startEncryption(String password) throws Exception {

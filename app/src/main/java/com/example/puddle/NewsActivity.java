@@ -17,11 +17,13 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -67,7 +69,7 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Article> articles = new ArrayList<>();
     private Adapter adapter;
     private RelativeLayout errorLayout;
-    private LinearLayout ViewPagerLayout,subCatLayout;
+    private LinearLayout ViewPagerLayout,subCatLayout, dialogLayout;
     private DrawerLayout drawerLayout;
     private SwipeRefreshLayout refreshLayout;
     private HorizontalScrollView categoryLayout;
@@ -75,6 +77,7 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private Dialog levelDialog;
 
     Button[] categories;
     ImageButton goToStart;
@@ -84,8 +87,11 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
     ImageView errorImage;
     TextView errorText, errorTextMessage, appTitle;
     int button, categoryIn, categoryOut, view_bg, bg_dark;
-    boolean isNetwork = true;
+    boolean isNetwork = true, isFirstTimePopUp = false;
     Drawable background, wrapped, wrapped2, wrapped3, unwrapped, unwrapped2, unwrapped3;
+    TextView dialog_level;
+    ImageView dialogCloseImg;
+    boolean[] isPopUpDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,8 +192,9 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
         }
         if (isNetwork)
             loadNews("", country);
-        onRefresh();
 
+        onRefresh();
+        checkAndDisplayDialog();
     }
 
     private void setNewsTheme() {
@@ -320,6 +327,94 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
         }
+    }
+
+    private void checkAndDisplayDialog() {
+        String level = "none";
+        isPopUpDone = new boolean[4];
+
+        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
+        np = newsPoints.getInt("np", 0);
+
+        SharedPreferences PopUpDone = getSharedPreferences("popUpDone", Context.MODE_PRIVATE);
+        isPopUpDone[0] = PopUpDone.getBoolean("readerDone", false);
+        isPopUpDone[1] = PopUpDone.getBoolean("frontBencherDone", false);
+        isPopUpDone[2] = PopUpDone.getBoolean("prodigyDone", false);
+        isPopUpDone[3] = PopUpDone.getBoolean("newsWizardDone", false);
+
+        if (np == 51) {
+            if (!isPopUpDone[0]) {
+                level = "Reader";
+                isFirstTimePopUp = true;
+                isPopUpDone[0] = true;
+                SharedPreferences.Editor editor = PopUpDone.edit();
+                editor.putBoolean("readerDone", true);
+                editor.apply();
+
+            }
+        }
+        else if (np == 101) {
+            if (!isPopUpDone[1]) {
+                level = "Front Bencher";
+                isFirstTimePopUp = true;
+                isPopUpDone[1] = true;
+                SharedPreferences.Editor editor = PopUpDone.edit();
+                editor.putBoolean("frontBencherDone", true);
+                editor.apply();
+            }
+        }
+        else if (np == 301) {
+            if (!isPopUpDone[2]) {
+                level = "Prodigy";
+                isFirstTimePopUp = true;
+                isPopUpDone[2] = true;
+                SharedPreferences.Editor editor = PopUpDone.edit();
+                editor.putBoolean("prodigyDone", true);
+                editor.apply();
+            }
+        }
+        else if (np == 501) {
+            if (!isPopUpDone[3]) {
+                level = "News Wizard";
+                isFirstTimePopUp = true;
+                isPopUpDone[3] = true;
+                SharedPreferences.Editor editor = PopUpDone.edit();
+                editor.putBoolean("newsWizardDone", true);
+                editor.apply();
+            }
+        }
+        else
+            isFirstTimePopUp = false;
+
+        if (isFirstTimePopUp) {
+            levelDialogPopUp(level);
+        }
+    }
+
+    private void levelDialogPopUp(String level) {
+
+        levelDialog = new Dialog(this);
+        levelDialog.setContentView(R.layout.level_dialog);
+
+        dialog_level = levelDialog.findViewById(R.id.dialog_levelText);
+        dialogCloseImg = levelDialog.findViewById(R.id.dialog_closeImg);
+        dialogLayout = levelDialog.findViewById(R.id.dialog_layout);
+        if (theme.equals("Dark")) {
+            dialogLayout.setBackgroundColor(Color.parseColor("#252525"));
+        }
+        else {
+            dialogLayout.setBackground(background);
+        }
+
+        dialog_level.setText(level);
+        dialogCloseImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                levelDialog.dismiss();
+            }
+        });
+        Objects.requireNonNull(levelDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        levelDialog.show();
     }
 
     private void checkData() {
