@@ -185,6 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(LoginActivity.this, NewsActivity.class);
                             intent.putExtra("user", username);
                             startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(LoginActivity.this, "Incorrect password", Toast.LENGTH_SHORT).show();
                         }
@@ -237,13 +238,13 @@ public class LoginActivity extends AppCompatActivity {
         byte[] input = password.getBytes();
         byte[] output = new byte[0];
 
-        output = encrypt(input, "SHA-1");
+        output = encrypt(input);
         BigInteger shaData = new BigInteger(1, output);
         return shaData.toString(16);
     }
 
-    private byte[] encrypt(byte[] data, String string) throws Exception {
-        MessageDigest digest = MessageDigest.getInstance(string);
+    private byte[] encrypt(byte[] data) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-1");
         digest.update(data);
         return digest.digest();
     }

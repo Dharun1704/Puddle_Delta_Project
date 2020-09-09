@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -36,8 +38,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.puddle.DateTime;
+import com.example.puddle.NewsDatabase;
 import com.example.puddle.NewsDetailActivity;
 import com.example.puddle.NewsModel.Article;
+import com.example.puddle.NewsModel.Source;
 import com.example.puddle.R;
 import com.squareup.picasso.Picasso;
 
@@ -49,8 +53,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private ArrayList<Article> articles;
     private Context context;
     ViewPager2 viewPager;
+    private ArrayList<Article> bookmarkArticles;
     private String theme;
-    private int np;
+    private int np, click = 0;;
     private boolean isBookmarked;
     private static DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
     private static AccelerateInterpolator accelerateInterpolator = new AccelerateInterpolator();
@@ -118,6 +123,25 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             }
         }
 
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                click++;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (click == 2) {
+                            bookmark(holder.doubleTapView, holder.doubleTapBookmark);
+                            addToBookmarksDB(model.getAuthor(), model.getTitle(), model.getDescription(),
+                                    model.getUrl(), model.getUrlToImage(),
+                                    model.getPublishedAt(), model.getSource().getName());
+                        }
+                        click = 0;
+                    }
+                }, 200);
+            }
+        });
+
         holder.openArticle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,15 +175,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return articles.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, desc, source, time;
         ImageView imageView, doubleTapBookmark;
         Button openArticle;
         View doubleTapView;
         NestedScrollView nsv;
-
-        private int click = 0;
 
         @SuppressLint("ClickableViewAccessibility")
         public ViewHolder(@NonNull View itemView) {
@@ -174,26 +196,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             openArticle = itemView.findViewById(R.id.openArticle);
             doubleTapBookmark = itemView.findViewById(R.id.doubleTapBookmark);
             doubleTapView = itemView.findViewById(R.id.doubleTapBackground);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    click++;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (click == 2) {
-                                bookmark(doubleTapView, doubleTapBookmark);
-                            }
-                            click = 0;
-                        }
-                    }, 200);
-                }
-            });
         }
     }
 
-    private static void bookmark(View view, ImageView imageView) {
+    private void bookmark(View view, ImageView imageView) {
 
         view.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.VISIBLE);
@@ -216,7 +222,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         ObjectAnimator bgAlphaAnim = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
         bgAlphaAnim.setDuration(500);
-        bgAlphaAnim.setStartDelay(150);
+        bgAlphaAnim.setStartDelay(350);
         bgAlphaAnim.setInterpolator(decelerateInterpolator);
 
         ObjectAnimator imgScaleUpYAnim = ObjectAnimator.ofFloat(imageView, "scaleY", 0.1f, 1f);
@@ -246,8 +252,51 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         animatorSet.start();
     }
 
-    private static void resetAnimation(View view, ImageView imageView) {
+    private void resetAnimation(View view, ImageView imageView) {
         view.setVisibility(View.GONE);
         imageView.setVisibility(View.GONE);
+    }
+
+    private void addToBookmarksDB(String mAuthor, String mTitle, String mDesc,
+                                  String mUrl, String mImage, String mDate, String mSource) {
+
+        bookmarkArticles = new ArrayList<>();
+        NewsDatabase db = new NewsDatabase(context);
+        Cursor data = db.getData();
+        while (data.moveToNext()) {
+            String author = data.getString(1);
+            String title = data.getString(2);
+            String desc = data.getString(3);
+            String url = data.getString(4);
+            String urltoimage = data.getString(5);
+            String publish = data.getString(6);
+            String source = data.getString(7);
+            Article article = new Article();
+            Source source1 = new Source();
+            article.setAuthor(author);
+            article.setTitle(title);
+            article.setDescription(desc);
+            article.setUrl(url);
+            article.setUrlToImage(urltoimage);
+            article.setPublishedAt(publish);
+            source1.setName(source);
+            article.setSource(source1);
+            bookmarkArticles.add(article);
+        }
+
+        boolean isExisted = false;
+        for (int i = 0; i < bookmarkArticles.size(); i++) {
+            if (bookmarkArticles.get(i).getUrl().equals(mUrl)) {
+                isExisted = true;
+            }
+        }
+
+        if (!isExisted) {
+            boolean insertData = db.addData(mAuthor, mTitle, mDesc, mUrl, mImage, mDate, mSource);
+            if (!insertData)
+                Toast.makeText(context, "Unable to add article to bookmarks", Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(context, "Article already exists in bookmarks.", Toast.LENGTH_SHORT).show();
     }
 }
