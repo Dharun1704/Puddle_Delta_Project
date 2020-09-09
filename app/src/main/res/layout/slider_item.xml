@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
+    android:id="@+id/sliderNsv"
     android:layout_marginBottom="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -10,14 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal">
-    
+
+        <View
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:elevation="10dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:id="@+id/doubleTapBackground"
+            android:background="@drawable/double_tap_circle"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:visibility="gone"
+            android:id="@+id/doubleTapBookmark"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_doubletap_bookmark" />
+
         <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="match_parent"
             android:layout_height="450dp"
             android:id="@+id/sliderPhoto"
             android:transitionName="img"
             app:riv_corner_radius="30dp"
-            android:elevation="0dp"
             android:src="@drawable/icon_news"/>
 
         <com.makeramen.roundedimageview.RoundedImageView

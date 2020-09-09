@@ -1,5 +1,10 @@
 package com.example.puddle.Adapters;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -7,9 +12,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.provider.ContactsContract;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +31,7 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -30,6 +42,7 @@ import com.example.puddle.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.logging.LogRecord;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
@@ -39,6 +52,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private String theme;
     private int np;
     private boolean isBookmarked;
+    private static DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
+    private static AccelerateInterpolator accelerateInterpolator = new AccelerateInterpolator();
 
     public Adapter(ArrayList<Article> articles, Context context, ViewPager2 viewPager, String theme, int np) {
         this.articles = articles;
@@ -55,7 +70,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull Adapter.ViewHolder holder, int position) {
         Article model = articles.get(position);
@@ -139,18 +154,100 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView title, desc, source, time;
-        ImageView imageView;
+        ImageView imageView, doubleTapBookmark;
         Button openArticle;
+        View doubleTapView;
+        NestedScrollView nsv;
 
+        private int click = 0;
+
+        @SuppressLint("ClickableViewAccessibility")
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            nsv = itemView.findViewById(R.id.sliderNsv);
             title = itemView.findViewById(R.id.sliderTitle);
             desc = itemView.findViewById(R.id.sliderDesc);
             source = itemView.findViewById(R.id.sliderSource);
             time = itemView.findViewById(R.id.sliderTime);
             imageView = itemView.findViewById(R.id.sliderPhoto);
             openArticle = itemView.findViewById(R.id.openArticle);
+            doubleTapBookmark = itemView.findViewById(R.id.doubleTapBookmark);
+            doubleTapView = itemView.findViewById(R.id.doubleTapBackground);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    click++;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (click == 2) {
+                                bookmark(doubleTapView, doubleTapBookmark);
+                            }
+                            click = 0;
+                        }
+                    }, 200);
+                }
+            });
         }
+    }
+
+    private static void bookmark(View view, ImageView imageView) {
+
+        view.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.VISIBLE);
+
+        view.setScaleX(0.1f);
+        view.setScaleY(0.1f);
+        view.setAlpha(1f);
+        imageView.setScaleX(0.1f);
+        imageView.setScaleY(0.1f);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        ObjectAnimator bgScaleYAnim = ObjectAnimator.ofFloat(view, "scaleY", 0.1f, 1f);
+        bgScaleYAnim.setDuration(500);
+        bgScaleYAnim.setInterpolator(decelerateInterpolator);
+
+        ObjectAnimator bgScaleXAnim = ObjectAnimator.ofFloat(view, "scaleX", 0.1f, 1f);
+        bgScaleXAnim.setDuration(500);
+        bgScaleXAnim.setInterpolator(decelerateInterpolator);
+
+        ObjectAnimator bgAlphaAnim = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
+        bgAlphaAnim.setDuration(500);
+        bgAlphaAnim.setStartDelay(150);
+        bgAlphaAnim.setInterpolator(decelerateInterpolator);
+
+        ObjectAnimator imgScaleUpYAnim = ObjectAnimator.ofFloat(imageView, "scaleY", 0.1f, 1f);
+        imgScaleUpYAnim.setDuration(300);
+        imgScaleUpYAnim.setInterpolator(decelerateInterpolator);
+
+        ObjectAnimator imgScaleUpXAnim = ObjectAnimator.ofFloat(imageView, "scaleX", 0.1f, 1f);
+        imgScaleUpXAnim.setDuration(300);
+        imgScaleUpXAnim.setInterpolator(decelerateInterpolator);
+
+        ObjectAnimator imgScaleDownYAnim = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 0f);
+        imgScaleDownYAnim.setDuration(300);
+        imgScaleDownYAnim.setInterpolator(accelerateInterpolator);
+
+        ObjectAnimator imgScaleDownXAnim = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 0f);
+        imgScaleDownXAnim.setDuration(300);
+        imgScaleDownXAnim.setInterpolator(accelerateInterpolator);
+
+        animatorSet.playTogether(bgScaleYAnim, bgScaleXAnim, bgAlphaAnim, imgScaleUpYAnim, imgScaleUpXAnim);
+        animatorSet.play(imgScaleDownYAnim).with(imgScaleDownXAnim).after(imgScaleUpYAnim);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                resetAnimation(view, imageView);
+            }
+        });
+        animatorSet.start();
+    }
+
+    private static void resetAnimation(View view, ImageView imageView) {
+        view.setVisibility(View.GONE);
+        imageView.setVisibility(View.GONE);
     }
 }
