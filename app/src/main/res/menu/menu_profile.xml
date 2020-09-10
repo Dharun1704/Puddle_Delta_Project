@@ -14,7 +14,7 @@
         android:title="Developer Mode"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/logOut"
+    <item android:id="@+id/userLogOut"
         android:title="Log Out"
         app:showAsAction="always"
         android:icon="@drawable/ic_logout"/>

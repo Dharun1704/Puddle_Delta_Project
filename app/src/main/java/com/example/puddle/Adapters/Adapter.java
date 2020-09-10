@@ -43,6 +43,8 @@ import com.example.puddle.NewsDetailActivity;
 import com.example.puddle.NewsModel.Article;
 import com.example.puddle.NewsModel.Source;
 import com.example.puddle.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,17 +52,19 @@ import java.util.logging.LogRecord;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
+    private DatabaseReference reference;
     private ArrayList<Article> articles;
     private Context context;
     ViewPager2 viewPager;
     private ArrayList<Article> bookmarkArticles;
     private String theme;
     private int np, click = 0;;
-    private boolean isBookmarked;
     private static DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
     private static AccelerateInterpolator accelerateInterpolator = new AccelerateInterpolator();
 
-    public Adapter(ArrayList<Article> articles, Context context, ViewPager2 viewPager, String theme, int np) {
+    public Adapter(DatabaseReference reference, ArrayList<Article> articles,
+                   Context context, ViewPager2 viewPager, String theme, int np) {
+        this.reference = reference;
         this.articles = articles;
         this.context = context;
         this.viewPager = viewPager;
@@ -150,6 +154,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 SharedPreferences.Editor editor = newsPoints.edit();
                 editor.putInt("np", np);
                 editor.apply();
+                reference.child("np").setValue(np);
                 Intent i = new Intent(context, NewsDetailActivity.class);
 
                 i.putExtra("url", model.getUrl());

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,11 @@ import com.example.puddle.NewsModel.Article;
 import com.example.puddle.NewsModel.Source;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -57,6 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private BookmarkAdapter adapter;
     private NewsDatabase newsDb;
     private LinearLayout dvlModePassword, dvlModeMain;
+    private DatabaseReference reference;
 
     TextView appTitle, userLvl, newsPoint, newsTheme, noBookmarkFound, bookmarksHD;
     RelativeLayout NewsThemeLayout;
@@ -70,10 +77,16 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     int selected[] = {0};
     boolean isDeveloper, isBookmarkLayoutOn = false;
 
+    private static final String TAG = "ProfileActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        SharedPreferences userProfileName = getSharedPreferences("userProfileName", MODE_PRIVATE);
+        String user = userProfileName.getString("userName", "");
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(user);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -146,8 +159,24 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
         np = newsPoints.getInt("np", 0);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                np = snapshot.child("np").getValue(Integer.class);
+                SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = newsPoints.edit();
+                editor.putInt("np", np);
+                editor.apply();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         assignLevel(np);
+        Log.i(TAG, "onCreate: " + np);
         newsPoint.setText(String.valueOf(np));
 
         fTheme = new String[2];
@@ -317,6 +346,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
     }
 
+    private void setInFirebase(int np) {
+        reference.child("np").setValue(np);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_profile, menu);
@@ -336,6 +369,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             SharedPreferences.Editor editor = newsPoints.edit();
             editor.putInt("np", np);
             editor.apply();
+            reference.child("np").setValue(np);
             newsPoint.setText(String.valueOf(np));
             isDeveloper = false;
             SharedPreferences developer = getSharedPreferences("Developer", Context.MODE_PRIVATE);
@@ -371,46 +405,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                         if (event == null || !event.isShiftPressed()) {
                             String password = v.getText().toString();
                             if (password.equals("puddle")) {
-
-                                isDeveloper = true;
-                                SharedPreferences developer = getSharedPreferences("Developer", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editorD = developer.edit();
-                                editorD.putBoolean("isDeveloper", isDeveloper);
-                                editorD.apply();
-
-                                dvlModePassword.setVisibility(View.GONE);
-                                dvlModeMain.setVisibility(View.VISIBLE);
-
-                                dvlCustomNp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                                    @Override
-                                    public boolean onEditorAction(TextView view, int actionId2, KeyEvent event2) {
-                                        if (actionId2 == EditorInfo.IME_ACTION_SEARCH || actionId2 == EditorInfo.IME_ACTION_DONE ||
-                                                event2 != null &&
-                                                        event2.getAction() == KeyEvent.ACTION_DOWN &&
-                                                        event2.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                                            if (event2 == null || !event2.isShiftPressed()) {
-
-                                                np = Integer.parseInt(view.getText().toString());
-                                                SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                                                SharedPreferences.Editor editor = newsPoints.edit();
-                                                editor.putInt("np", np);
-                                                editor.apply();
-                                                newsPoint.setText(String.valueOf(np));
-                                                assignLevel(np);
-                                                dvlCustomNp.setText("");
-                                                return true;
-                                            }
-                                        }
-                                        return false;
-                                    }
-                                });
-
+                                checkDeveloperPassword();
                             }
                             else {
                                 Snackbar.make(drawerLayout, "Incorrect Password", Snackbar.LENGTH_LONG).show();
                                 dvlModePassword.setVisibility(View.GONE);
                             }
-
                             return true;
                         }
                     }
@@ -444,7 +444,50 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         }
 
+        else if (item.getItemId() == R.id.userLogOut) {
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         return true;
+    }
+
+    private void checkDeveloperPassword() {
+        isDeveloper = true;
+        SharedPreferences developer = getSharedPreferences("Developer", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editorD = developer.edit();
+        editorD.putBoolean("isDeveloper", isDeveloper);
+        editorD.apply();
+
+        dvlModePassword.setVisibility(View.GONE);
+        dvlModeMain.setVisibility(View.VISIBLE);
+
+        dvlCustomNp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId2, KeyEvent event2) {
+                if (actionId2 == EditorInfo.IME_ACTION_SEARCH || actionId2 == EditorInfo.IME_ACTION_DONE ||
+                        event2 != null &&
+                                event2.getAction() == KeyEvent.ACTION_DOWN &&
+                                event2.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if (event2 == null || !event2.isShiftPressed()) {
+
+                        np = Integer.parseInt(view.getText().toString());
+                        Log.i(TAG, "onEditorAction: " + np);
+                        setInFirebase(np);
+                        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = newsPoints.edit();
+                        editor.putInt("np", np);
+                        editor.apply();
+                        newsPoint.setText(String.valueOf(np));
+                        assignLevel(np);
+                        dvlCustomNp.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void getDataFromDatabase() {
