@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -14,10 +13,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.provider.ContactsContract;
-import android.view.GestureDetector;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -43,12 +40,13 @@ import com.example.puddle.NewsDetailActivity;
 import com.example.puddle.NewsModel.Article;
 import com.example.puddle.NewsModel.Source;
 import com.example.puddle.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.logging.LogRecord;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
@@ -135,7 +133,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     @Override
                     public void run() {
                         if (click == 2) {
-                            bookmark(holder.doubleTapView, holder.doubleTapBookmark);
+                            setBookmarkAnim(holder.doubleTapView, holder.doubleTapBookmark);
                             addToBookmarksDB(model.getAuthor(), model.getTitle(), model.getDescription(),
                                     model.getUrl(), model.getUrlToImage(),
                                     model.getPublishedAt(), model.getSource().getName());
@@ -150,10 +148,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 np++;
-                SharedPreferences newsPoints = context.getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = newsPoints.edit();
-                editor.putInt("np", np);
-                editor.apply();
                 reference.child("np").setValue(np);
                 Intent i = new Intent(context, NewsDetailActivity.class);
 
@@ -204,7 +198,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
-    private void bookmark(View view, ImageView imageView) {
+    private void setBookmarkAnim(View view, ImageView imageView) {
 
         view.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.VISIBLE);

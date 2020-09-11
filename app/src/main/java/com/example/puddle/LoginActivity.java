@@ -218,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
         user.setNp(0);
         String pwd = startEncryption(password);
         user.setPassword(pwd);
+        user.setBookmarks(null);
         reference.child(username).setValue(user);
         Toast.makeText(LoginActivity.this, "Account created successfully. Please logIn.",
                 Toast.LENGTH_SHORT).show();
