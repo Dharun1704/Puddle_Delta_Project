@@ -65,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private LinearLayout dvlModePassword, dvlModeMain;
     private DatabaseReference reference;
 
-    TextView appTitle, userLvl, newsPoint, newsTheme, noBookmarkFound, bookmarksHD;
+    TextView appTitle, userLvl, newsPoint, newsTheme, noBookmarkFound, bookmarksHD, userDisplay;
     RelativeLayout NewsThemeLayout;
     EditText dvlPassword, dvlCustomNp;
     ImageButton deleteBookmark;
@@ -106,6 +106,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+        userDisplay = navigationView.getHeaderView(0).findViewById(R.id.userDisplayText);
+        userDisplay.setText(user);
 
         drawerLayout = findViewById(R.id.profile_layout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
@@ -157,16 +159,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             dvlModePassword.setVisibility(View.GONE);
         }
 
-        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-        np = newsPoints.getInt("np", 0);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 np = snapshot.child("np").getValue(Integer.class);
-                SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = newsPoints.edit();
-                editor.putInt("np", np);
-                editor.apply();
+                assignLevel(np);
+                Log.i(TAG, "onCreate: " + np);
+                newsPoint.setText(String.valueOf(np));
             }
 
             @Override
@@ -176,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         });
 
         assignLevel(np);
-        Log.i(TAG, "onCreate: " + np);
+        Log.i(TAG, "onCreate2: " + np);
         newsPoint.setText(String.valueOf(np));
 
         fTheme = new String[2];
@@ -247,10 +246,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                     if (event2 == null || !event2.isShiftPressed()) {
 
                         np = Integer.parseInt(view.getText().toString());
-                        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = newsPoints.edit();
-                        editor.putInt("np", np);
-                        editor.apply();
+                        reference.child("np").setValue(np);
                         newsPoint.setText(String.valueOf(np));
                         assignLevel(np);
                         dvlCustomNp.setText("");
@@ -365,10 +361,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         else if (item.getItemId() == R.id.profile_reset) {
             np = 0;
-            SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = newsPoints.edit();
-            editor.putInt("np", np);
-            editor.apply();
             reference.child("np").setValue(np);
             newsPoint.setText(String.valueOf(np));
             isDeveloper = false;
@@ -475,10 +467,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                         np = Integer.parseInt(view.getText().toString());
                         Log.i(TAG, "onEditorAction: " + np);
                         setInFirebase(np);
-                        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = newsPoints.edit();
-                        editor.putInt("np", np);
-                        editor.apply();
                         newsPoint.setText(String.valueOf(np));
                         assignLevel(np);
                         dvlCustomNp.setText("");

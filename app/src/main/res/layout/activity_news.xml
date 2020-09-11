@@ -315,6 +315,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/nav_drawer"
+        app:headerLayout="@layout/nav_drawer_header"
         app:itemIconTint="#FFF"
         android:theme="@style/SideDrawer"
         android:background="@drawable/background_violetblue"

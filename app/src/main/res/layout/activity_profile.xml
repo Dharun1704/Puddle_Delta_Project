@@ -439,6 +439,7 @@
         app:menu="@menu/nav_drawer"
         app:itemIconTint="#FFF"
         android:theme="@style/SideDrawer"
+        app:headerLayout="@layout/nav_drawer_header"
         android:background="@drawable/background_bluegradiant2"
         app:itemTextColor="#FFF"/>
 

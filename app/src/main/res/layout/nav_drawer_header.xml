@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" 
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@drawable/nav_menu_header_bg1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:textColor="#FFF"
+        android:textSize="17sp"
+        android:id="@+id/userDisplayText"
+        android:text="User Name"/>
+    
+</RelativeLayout>

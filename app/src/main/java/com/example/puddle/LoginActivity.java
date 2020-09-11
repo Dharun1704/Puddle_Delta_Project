@@ -215,6 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
+        user.setNp(0);
         String pwd = startEncryption(password);
         user.setPassword(pwd);
         reference.child(username).setValue(user);

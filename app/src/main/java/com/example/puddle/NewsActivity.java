@@ -97,7 +97,7 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
     int button, categoryIn, categoryOut, view_bg, bg_dark;
     boolean isNetwork = true, isFirstTimePopUp = false;
     Drawable background, wrapped, wrapped2, wrapped3, unwrapped, unwrapped2, unwrapped3;
-    TextView dialog_level;
+    TextView dialog_level, userDisplay;
     ImageView dialogCloseImg;
     boolean[] isPopUpDone;
 
@@ -156,6 +156,8 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+        userDisplay = navigationView.getHeaderView(0).findViewById(R.id.userDisplayText);
+        userDisplay.setText(user);
 
         drawerLayout = findViewById(R.id.newsDrawer);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
@@ -359,9 +361,6 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
         String level = "none";
         isPopUpDone = new boolean[4];
 
-        SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-        np = newsPoints.getInt("np", 0);
-        reference.child("np").setValue(np);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1026,8 +1025,6 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
                         articles.clear();
 
                     articles = response.body().getArticles();
-                    SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                    np = newsPoints.getInt("np", 0);
                     adapter = new Adapter(reference, articles, NewsActivity.this, viewPager2, theme, np);
                     viewPager2.setAdapter(adapter);
 
@@ -1058,8 +1055,6 @@ public class NewsActivity extends AppCompatActivity implements NavigationView.On
                         articles.clear();
 
                     articles = response.body().getArticles();
-                    SharedPreferences newsPoints = getSharedPreferences("newsPoints", Context.MODE_PRIVATE);
-                    np = newsPoints.getInt("np", 0);
                     adapter = new Adapter(reference, articles, NewsActivity.this, viewPager2, theme, np);
                     viewPager2.setAdapter(adapter);
 

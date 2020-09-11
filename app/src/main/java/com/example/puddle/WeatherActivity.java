@@ -100,7 +100,7 @@ public class WeatherActivity extends AppCompatActivity implements NavigationView
 
     ImageView mMainImage, errorImage;
     TextView mTemp, mLocation, mWind, mPressure, mHumidity, mDewPoint, mClouds, mSunRise, mSunSet, mVisibility,
-            mAppName, mMain, mDescription, mRain;
+            mAppName, mMain, mDescription, mRain, userDisplay;
     TextView[] forecastDate, forecastDay, forecastDesc, forecastMaxTemp, forecastMinTemp;
     ImageView[] forecastImage;
     Button getCurrLocWtr;
@@ -173,6 +173,10 @@ public class WeatherActivity extends AppCompatActivity implements NavigationView
 
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+        SharedPreferences userProfileName = getSharedPreferences("userProfileName", MODE_PRIVATE);
+        String user = userProfileName.getString("userName", "");
+        userDisplay = navigationView.getHeaderView(0).findViewById(R.id.userDisplayText);
+        userDisplay.setText(user);
 
         toggle = new ActionBarDrawerToggle(this, weatherLayout, R.string.open, R.string.close);
         weatherLayout.addDrawerListener(toggle);
