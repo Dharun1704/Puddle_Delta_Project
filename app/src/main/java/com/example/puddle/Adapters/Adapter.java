@@ -54,11 +54,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private ArrayList<Article> articles;
     private Context context;
     ViewPager2 viewPager;
-    private ArrayList<Article> bookmarkArticles;
+    private ArrayList<Article> bookmarkArticles, firebaseBookmarks;
     private String theme;
-    private int np, click = 0;;
+    private int np, click = 0, bookmarkNo = 0;
     private static DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
     private static AccelerateInterpolator accelerateInterpolator = new AccelerateInterpolator();
+
+    private static final String TAG = "Adapter";
 
     public Adapter(DatabaseReference reference, ArrayList<Article> articles,
                    Context context, ViewPager2 viewPager, String theme, int np) {
@@ -260,42 +262,57 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                                   String mUrl, String mImage, String mDate, String mSource) {
 
         bookmarkArticles = new ArrayList<>();
-        NewsDatabase db = new NewsDatabase(context);
-        Cursor data = db.getData();
-        while (data.moveToNext()) {
-            String author = data.getString(1);
-            String title = data.getString(2);
-            String desc = data.getString(3);
-            String url = data.getString(4);
-            String urltoimage = data.getString(5);
-            String publish = data.getString(6);
-            String source = data.getString(7);
-            Article article = new Article();
-            Source source1 = new Source();
-            article.setAuthor(author);
-            article.setTitle(title);
-            article.setDescription(desc);
-            article.setUrl(url);
-            article.setUrlToImage(urltoimage);
-            article.setPublishedAt(publish);
-            source1.setName(source);
-            article.setSource(source1);
-            bookmarkArticles.add(article);
-        }
+        firebaseBookmarks = new ArrayList<>();
+        DatabaseReference bookmarkRef = reference.child("Bookmarks");
+        bookmarkRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                bookmarkNo =(int) snapshot.getChildrenCount();
+                for (DataSnapshot dataBookmarkSnapshot : snapshot.getChildren()) {
+                    Article article = new Article();
+                    article.setAuthor(dataBookmarkSnapshot.child("author").getValue(String.class));
+                    article.setTitle(dataBookmarkSnapshot.child("title").getValue(String.class));
+                    article.setDescription(dataBookmarkSnapshot.child("description").getValue(String.class));
+                    article.setUrl(dataBookmarkSnapshot.child("url").getValue(String.class));
+                    article.setUrlToImage(dataBookmarkSnapshot.child("urlToImage").getValue(String.class));
+                    article.setPublishedAt(dataBookmarkSnapshot.child("publishedAt").getValue(String.class));
+                    article.setSource(dataBookmarkSnapshot.child("source").getValue(Source.class));
 
-        boolean isExisted = false;
-        for (int i = 0; i < bookmarkArticles.size(); i++) {
-            if (bookmarkArticles.get(i).getUrl().equals(mUrl)) {
-                isExisted = true;
+                    firebaseBookmarks.add(article);
+                }
+                for (int i = 0; i < bookmarkNo; i++) {
+                    Log.i(TAG, "addToBookmarksDB: " + firebaseBookmarks.get(i).getAuthor());
+                }
+
+                boolean isExisted = false;
+                for (int i = 0; i < firebaseBookmarks.size(); i++) {
+                    if (firebaseBookmarks.get(i).getUrl().equals(mUrl)) {
+                        isExisted = true;
+                    }
+                }
+
+                if (!isExisted) {
+                    Article article = new Article();
+                    Source source = new Source();
+                    article.setAuthor(mAuthor);
+                    article.setTitle(mTitle);
+                    article.setDescription(mDesc);
+                    article.setUrl(mUrl);
+                    article.setUrlToImage(mImage);
+                    article.setPublishedAt(mDate);
+                    source.setName(mSource);
+                    article.setSource(source);
+                    firebaseBookmarks.add(article);
+                    bookmarkRef.setValue(firebaseBookmarks);
+                    if (firebaseBookmarks.isEmpty())
+                        Toast.makeText(context, "Unable to add article to bookmarks", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
 
-        if (!isExisted) {
-            boolean insertData = db.addData(mAuthor, mTitle, mDesc, mUrl, mImage, mDate, mSource);
-            if (!insertData)
-                Toast.makeText(context, "Unable to add article to bookmarks", Toast.LENGTH_SHORT).show();
-        }
-        else
-            Toast.makeText(context, "Article already exists in bookmarks.", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

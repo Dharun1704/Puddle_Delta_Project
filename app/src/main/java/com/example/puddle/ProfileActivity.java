@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.collection.ArraySet;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -78,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     boolean isDeveloper, isBookmarkLayoutOn = false;
 
     private static final String TAG = "ProfileActivity";
+    private ArrayList<Article> firebaseBookmarks;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -415,21 +417,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             isBookmarkLayoutOn = true;
             nestedScrollView.setVisibility(View.GONE);
 
-            displayFromDatabase();
+            getDataFromDatabase();
 
             deleteBookmark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = bookmarkLayout.getCurrentItem();
-                    String deleteUrl = bookmarkArticle.get(position).getUrl();
-                    int deleteRow = newsDb.deleteData(deleteUrl);
-                    if (deleteRow > 0) {
-                        Toast.makeText(ProfileActivity.this, "Article deleted from bookmarks", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                        Toast.makeText(ProfileActivity.this, "Unable to delete article from bookmarks", Toast.LENGTH_SHORT).show();
-                    getDataFromDatabase();
-                    displayFromDatabase();
+                    reference.child("Bookmarks").child(String.valueOf(position)).removeValue();
                     bookmarkLayout.setCurrentItem(position, true);
                 }
             });
@@ -479,49 +473,44 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     }
 
     private void getDataFromDatabase() {
-        bookmarkArticle = new ArrayList<>();
-        Cursor data = newsDb.getData();
+        firebaseBookmarks = new ArrayList<>();
+        DatabaseReference bookmarkRef = reference.child("Bookmarks");
+        bookmarkRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataBookmarkSnapshot : snapshot.getChildren()) {
+                    Article article = new Article();
+                    article.setAuthor(dataBookmarkSnapshot.child("author").getValue(String.class));
+                    article.setTitle(dataBookmarkSnapshot.child("title").getValue(String.class));
+                    article.setDescription(dataBookmarkSnapshot.child("description").getValue(String.class));
+                    article.setUrl(dataBookmarkSnapshot.child("url").getValue(String.class));
+                    article.setUrlToImage(dataBookmarkSnapshot.child("urlToImage").getValue(String.class));
+                    article.setPublishedAt(dataBookmarkSnapshot.child("publishedAt").getValue(String.class));
+                    article.setSource(dataBookmarkSnapshot.child("source").getValue(Source.class));
 
-        while (data.moveToNext()) {
-            String author = data.getString(1);
-            String title = data.getString(2);
-            String desc = data.getString(3);
-            String url = data.getString(4);
-            String urltoimage = data.getString(5);
-            String publish = data.getString(6);
-            String source = data.getString(7);
-            Article article = new Article();
-            Source source1 = new Source();
-            article.setAuthor(author);
-            article.setTitle(title);
-            article.setDescription(desc);
-            article.setUrl(url);
-            article.setUrlToImage(urltoimage);
-            article.setPublishedAt(publish);
-            source1.setName(source);
-            article.setSource(source1);
-            bookmarkArticle.add(article);
-        }
-    }
+                    firebaseBookmarks.add(article);
+                }
 
-    private void displayFromDatabase() {
-        getDataFromDatabase();
+                if (firebaseBookmarks.size() == 0) {
+                    noBookmarkFound.setVisibility(View.VISIBLE);
+                    bookmarkLayout.setVisibility(View.GONE);
+                    deleteBookmark.setVisibility(View.GONE);
+                    bookmarksHD.setVisibility(View.GONE);
+                } else {
+                    noBookmarkFound.setVisibility(View.GONE);
+                    bookmarksHD.setVisibility(View.VISIBLE);
+                    deleteBookmark.setVisibility(View.VISIBLE);
+                    bookmarkLayout.setVisibility(View.VISIBLE);
+                    adapter = new BookmarkAdapter(ProfileActivity.this, firebaseBookmarks);
+                    bookmarkLayout.setAdapter(adapter);
+                }
+            }
 
-        if (bookmarkArticle.size() == 0) {
-            noBookmarkFound.setVisibility(View.VISIBLE);
-            bookmarkLayout.setVisibility(View.GONE);
-            deleteBookmark.setVisibility(View.GONE);
-            bookmarksHD.setVisibility(View.GONE);
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        else {
-            noBookmarkFound.setVisibility(View.GONE);
-            bookmarksHD.setVisibility(View.VISIBLE);
-            deleteBookmark.setVisibility(View.VISIBLE);
-            bookmarkLayout.setVisibility(View.VISIBLE);
-            adapter = new BookmarkAdapter(ProfileActivity.this, bookmarkArticle);
-            bookmarkLayout.setAdapter(adapter);
-        }
+            }
+        });
     }
 
     @Override
